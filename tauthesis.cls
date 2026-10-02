@@ -23,6 +23,7 @@
 \newif\if@langenglish\@langenglishfalse
 \newif\if@taunotdraftmode\@taunotdraftmodetrue
 \newif\if@programs\@programsfalse
+\newif\if@arialfont\@arialfontfalse
 
 % Language selection.
 \DeclareOption{english}{%
@@ -69,6 +70,11 @@
     \@programstrue
 }
 
+% Arial-like sans-serif font for both text and maths
+\DeclareOption{arial}{%
+    \@arialfonttrue
+}
+
 \DeclareOption*{
   \ClassWarning{tauthesis}{Unknown option '\CurrentOption'}
 }
@@ -81,13 +87,57 @@
 %%%%% PACKAGES AND RELATED DEFINITIONS %%%%%
 
 
+\RequirePackage{iftex}
+
+% Arial-like font for text and maths (class option arial),
+% see https://tex.stackexchange.com/questions/24035
+\if@arialfont
+\ifPDFTeX
+    % pdfLaTeX: Helvetica (Nimbus Sans), metrically identical to Arial.
+    % sansmathfonts gives sans-serif Greek letters and symbols; it must
+    % come before fontenc and helvet.
+    \RequirePackage{sansmathfonts}
+    \RequirePackage[utf8]{inputenc}
+    \RequirePackage[T1]{fontenc}
+    \RequirePackage[scaled=0.92]{helvet}
+    \renewcommand*\familydefault{\sfdefault}
+    % mathastext sets Latin letters and digits in maths in the text font.
+    % It must come after amsmath, which main.tex loads.
+    \AddToHook{begindocument/before}{%
+        \RequirePackage[italic]{mathastext}%
+    }
+\else
+    % XeLaTeX/LuaLaTeX: real Arial if installed,
+    % otherwise the metrically identical Liberation Sans.
+    \RequirePackage{fontspec}
+    \IfFontExistsTF{Arial}
+        {\newcommand{\@arialname}{Arial}}
+        {\newcommand{\@arialname}{Liberation Sans}}
+    \newcommand{\@arialitname}{\@arialname\space Italic}
+    \setmainfont{\@arialname}
+    \setsansfont{\@arialname}
+    \renewcommand*\familydefault{\sfdefault}
+    % unicode-math must come after amsmath, which main.tex loads.
+    % Fira Math gives sans-serif Greek letters and symbols,
+    % Latin Modern Math the calligraphic letters missing from Fira Math,
+    % Arial the Latin letters and digits.
+    \AddToHook{begindocument/before}{%
+        \RequirePackage{unicode-math}%
+        \setmathfont{FiraMath-Regular.otf}%
+        \setmathfont{latinmodern-math.otf}[range={cal,bfcal}]%
+        \setmathfont{\@arialname}[range={up/{Latin,latin,num}}, Script=Default,
+            script-features={}, sscript-features={}]%
+        \setmathfont{\@arialitname}[range={it/{Latin,latin}}, Script=Default,
+            script-features={}, sscript-features={}]%
+        \setmathrm{\@arialname}%
+        \setmathsf{\@arialname}%
+    }
+\fi
+\else
 % UTF-8 input
 \RequirePackage[utf8]{inputenc}
-
-% Arial-like font selection
-%\RequirePackage[scaled=0.91]{helvet}
 \RequirePackage[T1]{fontenc}
-%\renewcommand*\familydefault{\sfdefault}
+\fi
 
 % Page geometry and heading handling
 \RequirePackage[top=2.5cm,
