@@ -1,0 +1,262 @@
+\DocumentMetadata{
+  pdfversion=1.7,
+  pdfstandard=A-3b,
+  % Make sure this matches the main document language
+  % One of fi-FI or en-{US,UK,EN}
+  lang=fi-FI,
+}
+
+%%%%% INSTRUCTIONS FOR COMPILING THE DOCUMENT %%%%%
+%% Overleaf: just click Recompile.
+%% Terminal:
+%%  1. pdflatex main.tex
+%%  2. makeindex -s main.ist -t main.glg -o main.gls main.glo
+%%  3. biber main
+%%  4. pdflatex main.tex
+%%  5. pdflatex main.tex
+%% Similar sequence of commands is also required
+%% in LaTeX specific editors.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%% PREAMBLE %%%%%
+
+%%%%% Document class declaration.
+% The possible optional arguments are
+%   finnish - thesis in Finnish (default)
+%   english - thesis in English
+%   numeric - citations in numeric style (default)
+%   authoryear - citations in author-year style
+%   apa - citations in APA 7 (available only in English)
+%   ieee - citations in IEEE style
+%       apa and ieee provide biblatex basic styles as is!
+%   draft - for faster non-final works, also skips images
+%           (recommended, remove in final version)
+%   programs - if you wish to display code snippets
+% Example: \documentclass[english, authoryear]{tauthesis}
+%          thesis in English with author-year citations
+%\documentclass[authoryear]{tauthesis}
+
+
+\documentclass[authoryear]{tauthesis}
+
+% The glossaries package throws a warning:
+% No language module detected for 'finnish'.
+% You can safely ignore this. All other
+% warnings should be taken care of!
+
+%%%%% Your packages.
+% Before adding packages, see if they can be found
+% in tauthesis.cls already. If you're not sure that
+% you need a certain package, don't include it in
+% the document! This can dramatically reduce
+% compilation time.
+
+\usepackage{tabularx}
+\usepackage{colortbl}
+
+% Graphs
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% Subfigures and wrapping text
+% \usepackage{subcaption}
+
+% Mathematics packages
+\usepackage{amsmath, amssymb, amsthm}
+%\usepackage{bm}
+
+% Chemistry packages
+\usepackage{chemfig}
+\usepackage[version=4]{mhchem}
+
+% Text hyperlinking
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% (SI) unit handling
+\usepackage{siunitx}
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+\if@langenglish
+\sisetup{
+    detect-all,
+    exponent-product=\cdot,
+    output-decimal-marker={.}
+}
+%\sisetup{unit-font-command = \mathsf}
+\else
+\sisetup{
+    detect-all,
+    exponent-product=\cdot,
+    output-decimal-marker={,} % for theses in FINNISH!
+}
+%\sisetup{unit-font-command = \mathsf}
+\fi
+
+%%%%% Your commands.
+
+% Print verbatim LaTeX commands
+\newcommand{\verbcommand}[1]{\texttt{\textbackslash #1}}
+\newcommand{\im}{\mathrm{i}}
+\renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
+
+% Basic theorems in Finnish and in English.
+% Remove [chapter] if you wish a simply
+% running enumeration.
+% \newtheorem{lause}{Lause}[chapter]
+% \newtheorem{theorem}[lause]{Theorem}
+
+% \newtheorem{apulause}[lause]{Apulause}
+% \newtheorem{lemma}[lause]{Lemma}
+
+% Use these versions for individually
+% enumerated lemmas
+% \newtheorem{apulause}{Apulause}[chapter]
+% \newtheorem{lemma}{Lemma}[chapter]
+
+% Definition style
+% \theoremstyle{definition}
+% \newtheorem{maaritelma}{Määritelmä}[chapter]
+% \newtheorem{definition}[maaritelma]{Definition}
+% examples in this style
+
+%%%%% Glossary information.
+
+\loadglsentries[main]{sanasto.tex}
+\makeglossaries
+
+%%%%% Citation information.
+
+\addbibresource{references.bib}
+
+\begin{document}
+
+%%%%% FRONT MATTER %%%%%
+
+\frontmatter
+
+%%%%% Thesis information and title page.
+
+% The titles of the work. If there is no subtitle,
+% leave the arguments empty. Pass the title in
+% the primary language as the first argument
+% and its translation to the secondary language
+% as the second.
+\title{Kuvaava otsikko}{A Descriptive Title}
+\subtitle{Tarkentava alaotsikko}{A Specifying Subtitle}
+
+% The author name.
+\author{Etunimi Sukunimi}
+
+% The examiner information.
+% If your work has multiple examiners, replace with
+% \examiner[<label>]{<name> \\ <name>}
+% where <label> is an appropriate (plural) label,
+% e.g. Examiners or Tarkastajat, and <name>s are
+% replaced by the examiner names, each on their
+% separate line.
+\examiner[Tarkastajat]{Prof. Proffa Proffanen}
+
+% The finishing date of the thesis (YYYY-MM-DD).
+\finishdate{2026}{05}{05}
+
+% The type of the thesis (e.g. Kandidaatintyö
+% or Master of Science Thesis) in the primary
+% and the secondary languages of the thesis.
+\thesistype{Opinnäytetyön taso}{Thesis type}
+
+% The faculty and degree programme names in
+% the primary and the secondary languages of
+% the thesis.
+\facultyname{Tiedekunnan nimi}{Faculty Name}
+\programmename{Tutkinto-ohjelma}{Degree Programme}
+
+% The keywords to the thesis in the primary and
+% the secondary languages of the thesis
+\keywords%
+    {avainsana, avainsana, avainsana, avainsana, avainsana}
+    {keyword, keyword, keyword, keyword, keyword}
+
+\maketitle
+
+%%%%% Abstracts and preface.
+
+% Write the abstract(s) and the preface
+% into a separate file for the sake of clarity.
+% Pass the appropriate file name as the first
+% argument to these commands. Put the \abstract
+% in the primary language first and the
+% \otherabstract in the secondary language second.
+% Those who do not speak Finnish only need the
+% first abstract. The second argument of
+% the \preface command takes the place where
+% the thesis was signed in.
+\abstract{tiivistelma.tex}
+\otherabstract{abstract.tex}
+\preface{alkusanat.tex}{Tampereella}
+
+%%%%% Table of contents.
+
+\tableofcontents
+
+%%%%% Lists of figures, tables, listings and terms.
+
+% Print the lists of figures and/or tables.
+% Uncomment either of these commands as required.
+% Both are optional, but if there are many important
+% figures/tables, listing them may be a good idea.
+
+% \listoffigures
+% \listoftables
+% \lstlistoflistings
+
+% Print the glossary of terms.
+
+\glossary
+
+% AI disclaimer page.
+% finnish: tekoalyn-kaytto.tex 
+% english: use-of-ai.tex 
+\aidisclaimerinclusioncmd
+
+%%%%% MAIN MATTER %%%%%
+
+\mainmatter
+
+% Write each of the chapters of the thesis
+% into a separate file for the sake of clarity.
+% They can be \input as shown below. Give both
+% the chapters and their files as descriptive
+% names as possible.
+
+\input{johdanto.tex}
+
+\input{esitystyyli.tex}
+
+\input{viittaustekniikat.tex}
+
+\input{yhteenveto.tex}
+
+%%%%% Bibliography/references.
+
+% Print the bibliography according to the
+% information in ./tex/references.bib and
+% the in-line citations used in the body of
+% the thesis.
+% \emergencystretch=2em
+\printbibliography[heading=bibintoc]
+
+%%%%% Appendices.
+
+% Use only if it clarifies the structure of
+% the document. Remember to introduce each
+% appendix and its content.
+
+\begin{appendices}
+
+\input{liite.tex}
+
+\end{appendices}
+
+\end{document}
